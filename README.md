@@ -8,6 +8,8 @@ Status](https://travis-ci.org/BBC-News/alephant-lookup.png)](https://travis-ci.o
 [![Gem
 Version](https://badge.fury.io/rb/alephant-lookup.png)](http://badge.fury.io/rb/alephant-lookup)
 
+## Installation
+
 Add this line to your application's Gemfile:
 
     gem 'alephant-lookup'
