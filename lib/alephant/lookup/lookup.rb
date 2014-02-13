@@ -10,6 +10,14 @@ module Alephant
         @lookup_table.create
       end
 
+      def read(opts)
+        fail
+      end
+
+      def write(opts, location)
+        fail
+      end
+
     end
   end
 end
