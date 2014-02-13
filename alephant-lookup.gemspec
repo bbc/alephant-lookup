@@ -8,9 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Alephant::Lookup::VERSION
   spec.authors       = ["Robert Kenny"]
   spec.email         = ["kenoir@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = %q{Lookup a location in S3 using DynamoDB.}
+  spec.homepage      = "https://github.com/BBC-News/alephant-lookup"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
