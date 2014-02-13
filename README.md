@@ -1,8 +1,12 @@
 # Alephant::Lookup
 
-TODO: Write a gem description
+Lookup a location in S3 using DynamoDB.
 
-## Installation
+[![Build
+Status](https://travis-ci.org/BBC-News/alephant-lookup.png)](https://travis-ci.org/BBC-News/alephant-lookup)
+
+[![Gem
+Version](https://badge.fury.io/rb/alephant-lookup.png)](http://badge.fury.io/rb/alephant-lookup)
 
 Add this line to your application's Gemfile:
 
@@ -18,7 +22,19 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```rb
+require 'alephant-lookup'
+
+lookup = Alephant::Lookup.create('table_name', 'component_id')
+
+opts = { :key => :value }
+
+location = "s3-bucket/location"
+lookup.write(opts, location)
+
+lookup.read(opts)
+# => s3-bucket/location
+```
 
 ## Contributing
 
