@@ -13,7 +13,7 @@ describe Alephant::Lookup do
         table = double()
         table.should_receive(:create)
 
-        Alephant::Lookup::Lookup.new(table, component_id)
+        Alephant::Lookup::Lookup.new(table, :component_id)
       end
     end
 
