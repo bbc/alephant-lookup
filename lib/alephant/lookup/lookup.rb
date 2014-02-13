@@ -6,16 +6,21 @@ module Alephant
       def initialize(lookup_table, component_id)
         @lookup_table = lookup_table
         @component_id = component_id
-
-        @lookup_table.create
+        create_lookup_table
       end
 
       def read(opts)
-        fail
+        @lookup_table.location_for(@component_id, opts)
       end
 
       def write(opts, location)
         fail
+      end
+
+      private
+
+      def create_lookup_table
+        @lookup_table.create
       end
 
     end
