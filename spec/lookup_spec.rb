@@ -17,13 +17,13 @@ describe Alephant::Lookup do
       end
     end
 
-    describe '#read(component_id, opts)' do
+    describe '#read(opts)' do
       it 'returns lookup_table.location_for(component_id, opts_hash)' do
         fail
       end
     end
 
-   describe '#write(component_id, opts, data)' do
+   describe '#write(opts, location)' do
       it 'calls lookup_table.location_for(component_id, opts_hash, data)' do
         fail
       end
