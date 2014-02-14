@@ -43,21 +43,6 @@ module Alephant
         @table ||= @dynamo_db.tables[@table_name]
       end
 
-      def update_location_for(component_id, opts, location)
-        opts_hash = hash_for(opts)
-
-        @table.batch_put([
-          {
-            :component_id => component_id,
-            :opts_hash    => opts_hash,
-            :s3_location  => location
-          }
-        ])
-      end
-
-      def hash_for(opts)
-        Crimp.signature opts
-      end
 
       def location_for(component_id, opts)
         result = @client.query({
@@ -83,7 +68,22 @@ module Alephant
         result[:count] == 1 ? result[:member].first[S3_LOCATION_FIELD][:s] : nil
       end
 
+      def update_location_for(component_id, opts, location)
+
+        @table.batch_put([
+          {
+            :component_id => component_id,
+            :opts_hash    => hash_for(opts),
+            :s3_location  => location
+          }
+        ])
+      end
+
       private
+
+      def hash_for(opts)
+        Crimp.signature opts
+      end
 
       def ensure_table_exists
         create_dynamodb_table unless table.exists?
