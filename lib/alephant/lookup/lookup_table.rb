@@ -21,9 +21,12 @@ module Alephant
         }
       }
 
+      S3_LOCATION_FIELD = 's3_location'
+
       def initialize(table_name, config = DEFAULT_CONFIG)
         @mutex      = Mutex.new
         @dynamo_db  = AWS::DynamoDB.new
+        @client     = AWS::DynamoDB::Client::V20120810.new
         @table_name = table_name
         @config     = config
       end
@@ -40,21 +43,30 @@ module Alephant
       end
 
       def location_for(component_id, opts_hash)
-        id = "#{component_id}/#{opts_hash}"
-
-        rows = batch_get_value_for(id)
-        rows.count >= 1 ? rows.first : nil
+        result = @client.query({
+          :table_name => @table_name,
+          :consistent_read => true,
+          :select => 'SPECIFIC_ATTRIBUTES',
+          :attributes_to_get => [S3_LOCATION_FIELD],
+          :key_conditions => {
+            'component_id' => {
+              :comparison_operator => 'EQ',
+              :attribute_value_list => [
+                { 's' => component_id.to_s }
+              ],
+            },
+            'opts_hash' => {
+              :comparison_operator => 'EQ',
+              :attribute_value_list => [
+                { 's' => opts_hash.to_s }
+              ]
+            }
+          }
+        })
+        result[:count] == 1 ? result[:member].first[S3_LOCATION_FIELD][:s] : nil
       end
 
       private
-
-      def batch_get_value_for(id)
-        table.batch_get(['value'], [id], batch_get_opts)
-      end
-
-      def batch_get_opts
-        { :consistent_read => true }
-      end
 
       def ensure_table_exists
         create_dynamodb_table unless table.exists?

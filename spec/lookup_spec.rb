@@ -38,8 +38,8 @@ describe Alephant::Lookup do
 
         lookup_table
           .any_instance
-          .stub(:batch_get_value_for)
-          .and_return([s3_location])
+          .stub(:location_for)
+          .and_return(s3_location)
 
         pal_opts = {
           :id   => :england_council_election_results,
