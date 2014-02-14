@@ -1,6 +1,7 @@
 require 'aws-sdk'
 require 'thread'
 require 'timeout'
+require 'crimp'
 
 module Alephant
   module Lookup
@@ -42,7 +43,23 @@ module Alephant
         @table ||= @dynamo_db.tables[@table_name]
       end
 
-      def location_for(component_id, opts_hash)
+      def update_location_for(component_id, opts, location)
+        opts_hash = hash_for(opts)
+
+        @table.batch_put([
+          {
+            :component_id => component_id,
+            :opts_hash    => opts_hash,
+            :s3_location  => location
+          }
+        ])
+      end
+
+      def hash_for(opts)
+        Crimp.signature opts
+      end
+
+      def location_for(component_id, opts)
         result = @client.query({
           :table_name => @table_name,
           :consistent_read => true,
@@ -58,7 +75,7 @@ module Alephant
             'opts_hash' => {
               :comparison_operator => 'EQ',
               :attribute_value_list => [
-                { 's' => opts_hash.to_s }
+                { 's' => hash_for(opts) }
               ]
             }
           }

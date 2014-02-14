@@ -14,7 +14,7 @@ module Alephant
       end
 
       def write(opts, location)
-        fail
+        @lookup_table.update_location_for(@component_id, opts, location)
       end
 
       private
