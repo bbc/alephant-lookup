@@ -68,7 +68,7 @@ module Alephant
         result[:count] == 1 ? result[:member].first[S3_LOCATION_FIELD][:s] : nil
       end
 
-      def update_location_for(component_id, opts, location)
+      def write_location_for(component_id, opts, location)
 
         @table.batch_put([
           {

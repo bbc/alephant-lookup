@@ -77,7 +77,7 @@ describe Alephant::Lookup do
 
         lookup_table
           .any_instance
-          .stub(:update_location_for)
+          .stub(:write_location_for)
           .with(pal_opts[:id], pal_opts, :s3_location)
           .and_return(nil)
 
