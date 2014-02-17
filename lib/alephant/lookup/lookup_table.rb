@@ -15,10 +15,10 @@ module Alephant
       }
       SCHEMA = {
         :hash_key => {
-          :id => :string
+          :component_id => :string
         },
         :range_key => {
-          :location => :string
+          :opts_hash => :string
         }
       }
 
