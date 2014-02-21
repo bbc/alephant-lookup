@@ -25,7 +25,7 @@ Or install it yourself as:
 ## Usage
 
 ```rb
-require 'alephant-lookup'
+require 'alephant/lookup'
 
 lookup = Alephant::Lookup.create('table_name', 'component_id')
 
