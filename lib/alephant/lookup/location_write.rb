@@ -28,7 +28,8 @@ module Alephant
       end
 
       def process!
-        processed? ? process_batch_put : false
+        logger.info("LocationWrite#process! #{processed? ? "is" : "not"} running batch put on #{table_name}")
+        processed? ? false : process_batch_put
       end
 
       private
@@ -39,7 +40,8 @@ module Alephant
         @batch.put(
           table_name,
           @lookups.map { |lookup| lookup.to_h }
-        ).process!
+        )
+        @batch.process!
 
         processed = true
       end

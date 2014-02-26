@@ -21,8 +21,6 @@ module Alephant
         }
       }
 
-      S3_LOCATION_FIELD = 's3_location'
-
       def initialize(table_name, config = DEFAULT_CONFIG)
         @mutex      = Mutex.new
         @dynamo_db  = AWS::DynamoDB.new

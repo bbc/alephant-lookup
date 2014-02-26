@@ -12,15 +12,15 @@ module Alephant
         @opts_hash = hash_for(opts)
       end
 
-      private
-
       def to_h
         {
           :component_id => @component_id,
           :opts_hash => @opts_hash,
-          :location => @location
+          S3_LOCATION_FIELD => @location
         }
       end
+
+      private
 
       def hash_for(opts)
         Crimp.signature opts
