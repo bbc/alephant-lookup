@@ -10,11 +10,24 @@ module Alephant
       end
 
       def read(opts)
-        @lookup_table.location_for(@component_id, opts)
+        reader = LocationRead.new(@lookup_table)
+        reader.read(LookupQuery.new(@component_id, opts)).location
       end
 
       def write(opts, location)
-        @lookup_table.write_location_for(@component_id, opts, location)
+        writer = LocationWrite(@lookup_table).new
+        writer << LookupQuery.new(@component_id, opts, location)
+        writer.process!
+      end
+
+      def batch_write(opts, location)
+        @batch_write ||= LocationWrite(@lookup_table)
+        @batch_write << LookupQuery.new(@component_id, opts, location)
+      end
+
+      def batch_process
+        @batch_write.process!
+        @batch_write = nil
       end
 
       private
