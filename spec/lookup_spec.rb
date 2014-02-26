@@ -3,17 +3,17 @@ require 'spec_helper'
 describe Alephant::Lookup do
   describe '.create(table_name, component_id)' do
     it 'returns a lookup' do
-      Alephant::Lookup::Lookup
+      Alephant::Lookup::LookupHelper
         .any_instance
         .stub(:initialize)
         .and_return(double())
 
-      expect(subject.create(:table_name, :component_id)).to be_a Alephant::Lookup::Lookup
+      expect(subject.create(:table_name, :component_id)).to be_a Alephant::Lookup::LookupHelper
     end
   end
 
-  describe Alephant::Lookup::Lookup do
-    subject { Alephant::Lookup::Lookup }
+  describe Alephant::Lookup::LookupHelper do
+    subject { Alephant::Lookup::LookupHelper }
 
     describe '#initialize(table_name)' do
       it 'calls create on lookup_table' do
