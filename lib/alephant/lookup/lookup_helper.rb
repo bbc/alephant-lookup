@@ -20,13 +20,13 @@ module Alephant
       end
 
       def write(opts, location)
-        writer = LocationWrite(@lookup_table).new
+        writer = LocationWrite.new(@lookup_table)
         writer << LookupQuery.new(@component_id, opts, location)
         writer.process!
       end
 
       def batch_write(opts, location)
-        @batch_write ||= LocationWrite(@lookup_table).new
+        @batch_write ||= LocationWrite.new(@lookup_table)
         @batch_write << LookupQuery.new(@component_id, opts, location)
       end
 
