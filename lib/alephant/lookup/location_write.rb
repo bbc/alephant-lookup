@@ -1,9 +1,12 @@
 require 'aws-sdk'
 require 'alephant/lookup/lookup_query'
+require 'alephant/logger'
 
 module Alephant
   module Lookup
     class LocationWrite
+      include ::Alephant::Logger
+
       attr_reader :table_name
       attr_reader :lookups
 
@@ -31,6 +34,8 @@ module Alephant
       private
 
       def process_batch_put
+        logger.info("LocationWrite#process_batch_put to #{table_name} for #{@lookups.map { |lookup| lookup.to_h }}")
+
         @batch.put(
           table_name,
           @lookups.map { |lookup| lookup.to_h }
