@@ -1,6 +1,10 @@
+require 'alephant/lookup/lookup_table'
+require 'alephant/lookup/location_read'
+require 'alephant/lookup/location_write'
+
 module Alephant
   module Lookup
-    class Lookup
+    class LookupHelper
       attr_reader :component_id
 
       def initialize(lookup_table, component_id)
