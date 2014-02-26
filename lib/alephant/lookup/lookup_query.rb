@@ -17,7 +17,7 @@ module Alephant
       def to_h
         {
           :component_id => @component_id,
-          :opts_hash => @opts_hash
+          :opts_hash => @opts_hash,
           :location => @location
         }
       end

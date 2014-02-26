@@ -1,4 +1,5 @@
 require 'aws-sdk'
+require 'alephant/lookup/lookup_query'
 
 module Alephant
   module Lookup

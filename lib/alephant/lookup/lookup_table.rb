@@ -1,7 +1,6 @@
 require 'aws-sdk'
 require 'thread'
 require 'timeout'
-require 'crimp'
 
 module Alephant
   module Lookup

@@ -1,4 +1,5 @@
 require 'alephant/lookup/lookup_table'
+require 'alephant/lookup/lookup_query'
 require 'alephant/lookup/location_read'
 require 'alephant/lookup/location_write'
 
@@ -25,7 +26,7 @@ module Alephant
       end
 
       def batch_write(opts, location)
-        @batch_write ||= LocationWrite(@lookup_table)
+        @batch_write ||= LocationWrite(@lookup_table).new
         @batch_write << LookupQuery.new(@component_id, opts, location)
       end
 

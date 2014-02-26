@@ -1,11 +1,13 @@
 require 'aws-sdk'
+require 'alephant/lookup/lookup_location'
+require 'alephant/lookup/lookup_query'
 
 module Alephant
   module Lookup
     class LocationRead
       S3_LOCATION_FIELD = 's3_location'
 
-      attr_reader :location, :table_name
+      attr_reader :table_name
 
       def initialize(lookup_table)
         @client = AWS::DynamoDB::Client::V20120810.new
