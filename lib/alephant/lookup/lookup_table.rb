@@ -1,7 +1,6 @@
 require 'aws-sdk'
 require 'thread'
 require 'timeout'
-require 'crimp'
 
 module Alephant
   module Lookup
@@ -22,12 +21,9 @@ module Alephant
         }
       }
 
-      S3_LOCATION_FIELD = 's3_location'
-
       def initialize(table_name, config = DEFAULT_CONFIG)
         @mutex      = Mutex.new
         @dynamo_db  = AWS::DynamoDB.new
-        @client     = AWS::DynamoDB::Client::V20120810.new
         @table_name = table_name
         @config     = config
       end
@@ -43,47 +39,7 @@ module Alephant
         @table ||= @dynamo_db.tables[@table_name]
       end
 
-
-      def location_for(component_id, opts)
-        result = @client.query({
-          :table_name => @table_name,
-          :consistent_read => true,
-          :select => 'SPECIFIC_ATTRIBUTES',
-          :attributes_to_get => [S3_LOCATION_FIELD],
-          :key_conditions => {
-            'component_id' => {
-              :comparison_operator => 'EQ',
-              :attribute_value_list => [
-                { 's' => component_id.to_s }
-              ],
-            },
-            'opts_hash' => {
-              :comparison_operator => 'EQ',
-              :attribute_value_list => [
-                { 's' => hash_for(opts) }
-              ]
-            }
-          }
-        })
-        result[:count] == 1 ? result[:member].first[S3_LOCATION_FIELD][:s] : nil
-      end
-
-      def write_location_for(component_id, opts, location)
-
-        @table.batch_put([
-          {
-            :component_id => component_id,
-            :opts_hash    => hash_for(opts),
-            :s3_location  => location
-          }
-        ])
-      end
-
       private
-
-      def hash_for(opts)
-        Crimp.signature opts
-      end
 
       def ensure_table_exists
         create_dynamodb_table unless table.exists?
