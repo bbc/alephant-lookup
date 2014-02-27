@@ -8,26 +8,28 @@ module Alephant
     class LookupHelper
       attr_reader :component_id
 
-      def initialize(lookup_table, component_id)
+      def initialize(lookup_table, component_id = nil)
         @lookup_table = lookup_table
         @component_id = component_id
         create_lookup_table
       end
 
-      def read(opts)
+      def read(opts, ident = nil)
+        ident = @component_id || ident
         reader = LocationRead.new(@lookup_table)
-        reader.read(LookupQuery.new(@component_id, opts)).location
+        reader.read(LookupQuery.new(ident, opts)).location
       end
 
-      def write(opts, location)
-        writer = LocationWrite.new(@lookup_table)
-        writer << LookupQuery.new(@component_id, opts, location)
-        writer.process!
+      def write(opts, location, ident = nil)
+        ident = @component_id || ident
+        batch_write(opts, location, ident)
+        batch_process
       end
 
-      def batch_write(opts, location)
+      def batch_write(opts, location, ident = nil)
+        ident = @component_id || ident
         @batch_write ||= LocationWrite.new(@lookup_table)
-        @batch_write << LookupQuery.new(@component_id, opts, location)
+        @batch_write << LookupQuery.new(ident, opts, location)
       end
 
       def batch_process

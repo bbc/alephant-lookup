@@ -102,10 +102,10 @@ describe Alephant::Lookup do
           .any_instance
           .should_receive(:process!)
 
-        instance      = subject.new(lookup_table.new, pal_opts[:id])
-        write_return  = instance.write(pal_opts, :s3_location)
-
-        expect(write_return).to eq(true)
+        subject.new(
+          lookup_table.new,
+          pal_opts[:id]
+        ).write(pal_opts, :s3_location)
       end
     end
   end
