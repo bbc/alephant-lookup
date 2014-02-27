@@ -26,8 +26,9 @@ describe Alephant::Lookup do
     describe '#read(opts)' do
       let (:lookup_table) { Alephant::Lookup::LookupTable }
       let (:s3_location)  { '/s3-render-example/test/html/england_council_election_results/responsive' }
+      let (:location_read){ Alephant::Lookup::LocationRead }
 
-      it 'returns lookup_table.location_for(component_id, opts)' do
+      it 'returns correct S3 Location' do
         subject
           .any_instance
           .stub(:create_lookup_table)
@@ -36,10 +37,12 @@ describe Alephant::Lookup do
           .any_instance
           .stub(:initialize)
 
-        lookup_table
+        location = Alephant::Lookup::LookupLocation.new(:component_id,:opts_hash, s3_location)
+
+        location_read
           .any_instance
-          .stub(:location_for)
-          .and_return(s3_location)
+          .stub(:read)
+          .and_return(location)
 
         pal_opts = {
           :id   => :england_council_election_results,
@@ -56,8 +59,9 @@ describe Alephant::Lookup do
 
     describe '#write(opts, location)' do
 
-      let (:lookup_table) { Alephant::Lookup::LookupTable }
-      let (:s3_location)  { '/s3-render-example/test/html/england_council_election_results/responsive' }
+      let (:lookup_table)  { Alephant::Lookup::LookupTable }
+      let (:s3_location)   { '/s3-render-example/test/html/england_council_election_results/responsive' }
+      let (:location_write){ Alephant::Lookup::LocationWrite }
 
       it 'returns lookup_table.update_location_for(component_id, opts_hash, data)' do
 
@@ -69,23 +73,39 @@ describe Alephant::Lookup do
           .any_instance
           .stub(:initialize)
 
+        lookup_table
+          .any_instance
+          .stub(:table_name)
+          .and_return('table_name')
+
         pal_opts = {
           :id   => :england_council_election_results,
           :env  => :test,
           :type => :responsive
         }
 
-        lookup_table
+        AWS::DynamoDB::BatchWrite
           .any_instance
-          .stub(:write_location_for)
-          .with(pal_opts[:id], pal_opts, :s3_location)
-          .and_return(nil)
+          .should_receive(:put)
+          .with(
+            'table_name',
+              [
+                {
+                  :component_id=> :england_council_election_results,
+                  :opts_hash=>"52a25baaaa8c4527ddc869feaa285c3a",
+                  "location"=>:s3_location
+                }
+              ]
+          )
+
+        AWS::DynamoDB::BatchWrite
+          .any_instance
+          .should_receive(:process!)
 
         instance      = subject.new(lookup_table.new, pal_opts[:id])
         write_return  = instance.write(pal_opts, :s3_location)
 
-        expect(write_return).to eq(nil)
-
+        expect(write_return).to eq(true)
       end
     end
   end
