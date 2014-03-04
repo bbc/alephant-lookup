@@ -28,7 +28,7 @@ module Alephant
       end
 
       def process!
-        logger.info("LocationWrite#process! #{processed? ? "is" : "not"} running batch put on #{table_name}")
+        logger.info("LocationWrite#process! #{processed? ? "not" : "is"} running batch put on #{table_name}")
         processed? ? false : process_batch_put
       end
 
