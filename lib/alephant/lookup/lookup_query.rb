@@ -3,27 +3,50 @@ require 'alephant/lookup/lookup_location'
 
 module Alephant
   module Lookup
-    class LookupQuery < LookupLocation
-      attr_reader :opts_hash
-      attr_writer :location
+    class LookupQuery
+      attr_reader :table_name, :lookup_location
 
-      def initialize(component_id, opts, location = nil)
-        super(component_id, opts, location)
-        @opts_hash = hash_for(opts)
+      def initialize(table_name, component_id, batch_version, opts)
+        @client = AWS::DynamoDB::Client::V20120810.new
+        @table_name = table_name
+        @lookup_location = LookupLocation.new(component_id, batch_version, opts)
       end
 
-      def to_h
-        {
-          :component_id => @component_id,
-          :opts_hash => @opts_hash,
-          S3_LOCATION_FIELD => @location
-        }
+      def run!
+        lookup_location.tap do |l|
+          l.location = s3_location_from(
+            @client.query(to_q)
+          )
+        end
       end
 
       private
 
-      def hash_for(opts)
-        Crimp.signature opts
+      def s3_location_from(result)
+        result[:count] == 1 ? result[:member].first['location'][:s] : nil
+      end
+
+      def to_q
+        {
+          :table_name => table_name,
+          :consistent_read => true,
+          :select => 'SPECIFIC_ATTRIBUTES',
+          :attributes_to_get => ['location'],
+          :key_conditions => {
+            'component_key' => {
+              :comparison_operator => 'EQ',
+              :attribute_value_list => [
+                { 's' => @lookup_location.component_key }
+              ],
+            },
+            'batch_version' => {
+              :comparison_operator => 'EQ',
+              :attribute_value_list => [
+                { 'n' => @lookup_location.batch_version.to_s }
+              ]
+            }
+          }
+        }
       end
     end
   end

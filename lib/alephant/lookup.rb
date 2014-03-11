@@ -6,9 +6,9 @@ module Alephant
   module Lookup
     @@lookup_tables = {}
 
-    def self.create(table_name, component_id = nil)
+    def self.create(table_name)
       @@lookup_tables[table_name] ||= LookupTable.new(table_name)
-      LookupHelper.new(@@lookup_tables[table_name], component_id)
+      LookupHelper.new(@@lookup_tables[table_name])
     end
   end
 end
