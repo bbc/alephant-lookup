@@ -79,7 +79,27 @@ describe Alephant::Lookup do
             double().as_null_object
           )
 
-        pending
+        ddb_table = double().as_null_object
+        ddb_table
+          .should_receive(:batch_put)
+          .with([{
+            :component_key => "id/7e0c33c476b1089500d5f172102ec03e",
+            :batch_version => "0",
+            :location => "/location"
+          }])
+
+        lookup_table = double().as_null_object
+        lookup_table
+          .should_receive(:table)
+          .and_return(ddb_table)
+
+        Alephant::Lookup::LookupHelper
+          .any_instance
+          .stub(:lookup_table)
+          .and_return(lookup_table)
+
+        instance = subject.new(lookup_table)
+        instance.write('id',{},'0','/location')
       end
     end
   end
