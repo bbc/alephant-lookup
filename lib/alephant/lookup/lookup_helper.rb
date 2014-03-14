@@ -1,7 +1,5 @@
 require 'alephant/lookup/lookup_table'
 require 'alephant/lookup/lookup_query'
-require 'alephant/lookup/location_read'
-require 'alephant/lookup/location_write'
 
 module Alephant
   module Lookup
