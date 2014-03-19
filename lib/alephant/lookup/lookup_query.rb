@@ -6,10 +6,10 @@ module Alephant
     class LookupQuery
       attr_reader :table_name, :lookup_location
 
-      def initialize(table_name, component_id, batch_version, opts)
+      def initialize(table_name, component_id, opts, batch_version)
         @client = AWS::DynamoDB::Client::V20120810.new
         @table_name = table_name
-        @lookup_location = LookupLocation.new(component_id, batch_version, opts)
+        @lookup_location = LookupLocation.new(component_id, opts, batch_version)
       end
 
       def run!

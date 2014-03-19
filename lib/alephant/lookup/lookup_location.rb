@@ -6,7 +6,7 @@ module Alephant
       attr_reader :component_id, :component_key, :opts, :opts_hash, :batch_version
       attr_accessor :location
 
-      def initialize(component_id, batch_version, opts, location = nil)
+      def initialize(component_id, opts, batch_version, location = nil)
         @component_id = component_id
         @batch_version = batch_version
         @opts = opts
