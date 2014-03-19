@@ -64,7 +64,7 @@ describe Alephant::Lookup do
         table.stub(:table_name).and_return('table_name')
 
         instance = subject.new(table)
-        lookup = instance.read('id',{:variant => "foo"},0)
+        lookup = instance.read('id', 0, {:variant => "foo"})
 
         expect(lookup.location).to eq('/location')
       end
@@ -99,7 +99,7 @@ describe Alephant::Lookup do
           .and_return(lookup_table)
 
         instance = subject.new(lookup_table)
-        instance.write('id',{},'0','/location')
+        instance.write('id','0',{},'/location')
       end
     end
   end
