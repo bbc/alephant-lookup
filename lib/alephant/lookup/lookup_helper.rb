@@ -16,7 +16,7 @@ module Alephant
       end
 
       def write(id, opts, batch_version, location)
-        LookupLocation.new(id, batch_version, opts, location).tap do |l|
+        LookupLocation.new(id, opts, batch_version, location).tap do |l|
           lookup_table.table.batch_put([
             {
               :component_key => l.component_key,

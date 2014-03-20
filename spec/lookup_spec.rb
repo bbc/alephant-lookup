@@ -99,7 +99,7 @@ describe Alephant::Lookup do
           .and_return(lookup_table)
 
         instance = subject.new(lookup_table)
-        instance.write('id','0',{},'/location')
+        instance.write('id',{},'0','/location')
       end
     end
   end
