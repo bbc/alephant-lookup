@@ -1,17 +1,14 @@
-require 'aws-sdk'
-require 'thread'
-require 'timeout'
+require "aws-sdk"
+require "thread"
+require "timeout"
+
+require "alephant/support/dynamodb/table"
 
 module Alephant
   module Lookup
-    class LookupTable
+    class LookupTable < ::Alephant::Support::DynamoDB::Table
       attr_reader :table_name
 
-      TIMEOUT = 120
-      DEFAULT_CONFIG = {
-        :write_units => 5,
-        :read_units  => 10
-      }
       SCHEMA = {
         :hash_key => {
           :component_key => :string

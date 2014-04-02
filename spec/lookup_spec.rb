@@ -1,8 +1,8 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Alephant::Lookup do
-  describe '.create(table_name, component_id)' do
-    it 'returns a lookup' do
+  describe ".create(table_name, component_id)" do
+    it "returns a lookup" do
       Alephant::Lookup::LookupHelper
         .any_instance
         .stub(:initialize)
@@ -14,15 +14,15 @@ describe Alephant::Lookup do
   describe Alephant::Lookup::LookupHelper do
     subject { Alephant::Lookup::LookupHelper }
 
-    describe '#initialize(table_name)' do
-      it 'calls create on lookup_table' do
+    describe "#initialize(table_name)" do
+      it "calls create on lookup_table" do
         table = double()
         table.should_receive(:create)
         subject.new(table)
       end
     end
 
-    describe '#read(id, opts, batch_version)' do
+    describe "#read(id, opts, batch_version)" do
       let(:expected_query) do
         {
           :table_name=>"table_name",
@@ -42,7 +42,7 @@ describe Alephant::Lookup do
         }
       end
 
-      it 'queries DynamoDb and returns a location' do
+      it "queries DynamoDb and returns a location" do
         AWS::DynamoDB::Client::V20120810
           .any_instance
           .stub(:initialize)
@@ -55,23 +55,23 @@ describe Alephant::Lookup do
             {
               :count => 1,
               :member => [
-                { 'location' => { :s => '/location' } }
+                { "location" => { :s => "/location" } }
               ]
             }
           )
 
         table = double().as_null_object
-        table.stub(:table_name).and_return('table_name')
+        table.stub(:table_name).and_return("table_name")
 
         instance = subject.new(table)
-        lookup = instance.read('id', 0, {:variant => "foo"})
+        lookup = instance.read("id", 0, {:variant => "foo"})
 
-        expect(lookup.location).to eq('/location')
+        expect(lookup.location).to eq("/location")
       end
     end
 
-    describe '#write(opts, location)' do
-      it 'does not fail' do
+    describe "#write(opts, location)" do
+      it "does not fail" do
         AWS::DynamoDB
           .any_instance
           .stub(:initialize)
@@ -99,7 +99,18 @@ describe Alephant::Lookup do
           .and_return(lookup_table)
 
         instance = subject.new(lookup_table)
-        instance.write('id',{},'0','/location')
+        instance.write("id",{},"0","/location")
+      end
+    end
+
+    describe "#truncate!" do
+      it "deletes all table rows" do
+        table = double()
+        table.stub(:create)
+        table.should_receive(:truncate!)
+
+        subject = Alephant::Lookup::LookupHelper.new(table)
+        subject.truncate!
       end
     end
   end

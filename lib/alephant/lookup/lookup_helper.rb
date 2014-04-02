@@ -1,5 +1,5 @@
-require 'alephant/lookup/lookup_table'
-require 'alephant/lookup/lookup_query'
+require "alephant/lookup/lookup_table"
+require "alephant/lookup/lookup_query"
 
 module Alephant
   module Lookup
@@ -25,6 +25,10 @@ module Alephant
             }
           ])
         end
+      end
+
+      def truncate!
+        @lookup_table.truncate!
       end
     end
   end
