@@ -26,6 +26,10 @@ module Alephant
           ])
         end
       end
+
+      def truncate!
+        @lookup_table.truncate!
+      end
     end
   end
 end

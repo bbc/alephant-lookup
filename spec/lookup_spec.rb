@@ -102,5 +102,16 @@ describe Alephant::Lookup do
         instance.write("id",{},"0","/location")
       end
     end
+
+    describe "#truncate!" do
+      it "deletes all table rows" do
+        table = double()
+        table.stub(:create)
+        table.should_receive(:truncate!)
+
+        subject = Alephant::Lookup::LookupHelper.new(table)
+        subject.truncate!
+      end
+    end
   end
 end
