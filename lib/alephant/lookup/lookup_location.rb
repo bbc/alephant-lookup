@@ -1,4 +1,4 @@
-require 'crimp'
+require "crimp"
 
 module Alephant
   module Lookup

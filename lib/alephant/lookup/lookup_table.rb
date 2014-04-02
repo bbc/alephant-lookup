@@ -1,6 +1,6 @@
-require 'aws-sdk'
-require 'thread'
-require 'timeout'
+require "aws-sdk"
+require "thread"
+require "timeout"
 
 module Alephant
   module Lookup
