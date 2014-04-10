@@ -6,12 +6,12 @@ require 'alephant/logger'
 
 module Alephant
   module Lookup
-    include ::Alephant::Logger
+    include Logger
     @@lookup_tables = {}
 
-    def self.create(table_name, logger = nil)
+    def self.create(table_name)
       @@lookup_tables[table_name] ||= LookupTable.new(table_name)
-      LookupHelper.new(@@lookup_tables[table_name], logger)
+      LookupHelper.new(@@lookup_tables[table_name], Logger.get_logger)
     end
   end
 end

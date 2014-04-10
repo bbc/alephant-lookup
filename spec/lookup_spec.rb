@@ -17,8 +17,9 @@ describe Alephant::Lookup do
     describe "#initialize(table_name)" do
       it "calls create on lookup_table" do
         table = double()
+        table.should_receive(:table_name)
         table.should_receive(:create)
-        subject.new(table)
+        subject.new(table, Logger.new(STDOUT))
       end
     end
 
@@ -63,7 +64,7 @@ describe Alephant::Lookup do
         table = double().as_null_object
         table.stub(:table_name).and_return("table_name")
 
-        instance = subject.new(table)
+        instance = subject.new(table, Logger.new(STDOUT))
         lookup = instance.read("id", 0, {:variant => "foo"})
 
         expect(lookup.location).to eq("/location")
@@ -98,7 +99,7 @@ describe Alephant::Lookup do
           .stub(:lookup_table)
           .and_return(lookup_table)
 
-        instance = subject.new(lookup_table)
+        instance = subject.new(lookup_table, Logger.new(STDOUT))
         instance.write("id",{},"0","/location")
       end
     end
@@ -107,9 +108,10 @@ describe Alephant::Lookup do
       it "deletes all table rows" do
         table = double()
         table.stub(:create)
+        table.should_receive(:table_name)
         table.should_receive(:truncate!)
 
-        subject = Alephant::Lookup::LookupHelper.new(table)
+        subject = Alephant::Lookup::LookupHelper.new(table, Logger.new(STDOUT))
         subject.truncate!
       end
     end

@@ -11,7 +11,7 @@ module Alephant
       attr_reader :lookup_table
 
       def initialize(lookup_table, logger)
-        Logger.set_logger(logger) unless logger.nil?
+        Logger.set_logger(logger)
 
         logger.info "LookupHelper#initialize(#{lookup_table.table_name})"
 
