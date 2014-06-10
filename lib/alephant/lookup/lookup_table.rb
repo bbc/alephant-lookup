@@ -7,65 +7,31 @@ require "alephant/support/dynamodb/table"
 module Alephant
   module Lookup
     class LookupTable < ::Alephant::Support::DynamoDB::Table
-      attr_reader :table_name
+      attr_reader :table_name, :client
 
-      SCHEMA = {
-        :hash_key => {
-          :component_key => :string
-        },
-        :range_key => {
-          :batch_version => :number
-        }
-      }
-
-      def initialize(table_name, config = DEFAULT_CONFIG)
+      def initialize(table_name)
         @mutex      = Mutex.new
-        @dynamo_db  = AWS::DynamoDB.new
+        @client     = AWS::DynamoDB::Client::V20120810.new
         @table_name = table_name
-        @config     = config
       end
 
-      def create
-        @mutex.synchronize do
-          ensure_table_exists
-          ensure_table_active
-        end
+      def write(component_key, version, location)
+        client.put_item({
+          :table_name => table_name,
+          :item => {
+            'component_key' => {
+              'S' => component_key.to_s
+            },
+            'batch_version' => {
+              'N' => version.to_s
+            },
+            'location' => {
+              'S' => location.to_s
+            }
+          }
+        })
       end
 
-      def table
-        @table ||= @dynamo_db.tables[@table_name]
-      end
-
-      private
-
-      def ensure_table_exists
-        create_dynamodb_table unless table.exists?
-      end
-
-      def ensure_table_active
-        sleep_until_table_active unless table_active?
-      end
-
-      def create_dynamodb_table
-        @table = @dynamo_db.tables.create(
-          @table_name,
-          @config[:read_units],
-          @config[:write_units],
-          SCHEMA
-        )
-      end
-
-      def table_active?
-        table.status == :active
-      end
-
-      def sleep_until_table_active
-        begin
-          Timeout::timeout(TIMEOUT) do
-            sleep 1 until table_active?
-          end
-        end
-      end
     end
   end
 end

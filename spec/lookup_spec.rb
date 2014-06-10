@@ -18,7 +18,6 @@ describe Alephant::Lookup do
       it "calls create on lookup_table" do
         table = double()
         table.should_receive(:table_name)
-        table.should_receive(:create)
         subject.new(table, Logger.new(STDOUT))
       end
     end
@@ -73,26 +72,25 @@ describe Alephant::Lookup do
 
     describe "#write(opts, location)" do
       it "does not fail" do
-        AWS::DynamoDB
+
+        AWS::DynamoDB::Client::V20120810
           .any_instance
           .stub(:initialize)
           .and_return(
             double().as_null_object
           )
 
-        ddb_table = double().as_null_object
-        ddb_table
-          .should_receive(:batch_put)
-          .with([{
-            :component_key => "id/7e0c33c476b1089500d5f172102ec03e",
-            :batch_version => "0",
-            :location => "/location"
-          }])
-
         lookup_table = double().as_null_object
         lookup_table
-          .should_receive(:table)
-          .and_return(ddb_table)
+          .should_receive(:table_name)
+          .and_return('test')
+        lookup_table
+          .should_receive(:write)
+          .with(
+            "id/7e0c33c476b1089500d5f172102ec03e",
+            "0",
+            "/location"
+          )
 
         Alephant::Lookup::LookupHelper
           .any_instance
