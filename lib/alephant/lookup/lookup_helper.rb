@@ -16,7 +16,6 @@ module Alephant
         logger.info "LookupHelper#initialize(#{lookup_table.table_name})"
 
         @lookup_table = lookup_table
-        @lookup_table.create
       end
 
       def read(id, opts, batch_version)
@@ -29,13 +28,11 @@ module Alephant
         logger.info "LookupHelper#write(#{id}, #{opts}, #{batch_version}, #{location})"
 
         LookupLocation.new(id, opts, batch_version, location).tap do |l|
-          lookup_table.table.batch_put([
-            {
-              :component_key => l.component_key,
-              :batch_version => l.batch_version,
-              :location      => l.location
-            }
-          ])
+          lookup_table.write(
+            l.component_key,
+            l.batch_version,
+            l.location
+          )
         end
       end
 
