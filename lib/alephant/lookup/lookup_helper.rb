@@ -10,9 +10,7 @@ module Alephant
 
       attr_reader :lookup_table
 
-      def initialize(lookup_table, logger)
-        Logger.set_logger(logger)
-
+      def initialize(lookup_table)
         logger.info "LookupHelper#initialize(#{lookup_table.table_name})"
 
         @lookup_table = lookup_table

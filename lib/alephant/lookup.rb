@@ -11,7 +11,7 @@ module Alephant
 
     def self.create(table_name)
       @@lookup_tables[table_name] ||= LookupTable.new(table_name)
-      LookupHelper.new(@@lookup_tables[table_name], Logger.get_logger)
+      LookupHelper.new(@@lookup_tables[table_name])
     end
   end
 end
