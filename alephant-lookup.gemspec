@@ -6,8 +6,8 @@ require 'alephant/lookup/version'
 Gem::Specification.new do |spec|
   spec.name          = "alephant-lookup"
   spec.version       = Alephant::Lookup::VERSION
-  spec.authors       = ["Robert Kenny"]
-  spec.email         = ["kenoir@gmail.com"]
+  spec.authors       = ["BBC News"]
+  spec.email         = ["FutureMediaNewsRubyGems@bbc.co.uk"]
   spec.summary       = "Lookup a location in S3 using DynamoDB."
   spec.homepage      = "https://github.com/BBC-News/alephant-lookup"
   spec.license       = "MIT"
