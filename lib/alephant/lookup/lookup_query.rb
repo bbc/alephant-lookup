@@ -9,17 +9,31 @@ module Alephant
       attr_reader :table_name, :lookup_location
 
       def initialize(table_name, component_id, opts, batch_version)
-        @client = AWS::DynamoDB::Client::V20120810.new
-        @table_name = table_name
+        @client          = AWS::DynamoDB::Client::V20120810.new
+        @table_name      = table_name
         @lookup_location = LookupLocation.new(component_id, opts, batch_version)
-        logger.info "LookupQuery#initialize: table name '#{table_name}', component id '#{component_id}', batch version '#{batch_version}', location '#{lookup_location}'"
+
+        logger.info(
+          "event"        => "LookupQueryInitialized",
+          "tableName"    => table_name,
+          "componentId"  => component_id,
+          "location"     => lookup_location,
+          "batchVersion" => batch_version,
+          "method"       => "#{self.class}#initialize"
+        )
       end
 
       def run!
         lookup_location.tap do |l|
           l.location = s3_location_from(
             @client.query(to_q)
-          ).tap { |loc| logger.info "LookupQuery#run!: location '#{loc}'" }
+          ).tap do |loc|
+            logger.info(
+              "event"    => "S3LocationRetrieved",
+              "location" => loc,
+              "method"   => "#{self.class}#run!"
+            )
+          end
         end
       end
 

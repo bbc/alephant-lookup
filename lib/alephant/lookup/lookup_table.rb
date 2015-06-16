@@ -15,12 +15,14 @@ module Alephant
         @mutex      = Mutex.new
         @client     = AWS::DynamoDB::Client::V20120810.new
         @table_name = table_name
-        logger.info "LookupTable#initialize: table name '#{table_name}'"
+        logger.info(
+          "event"     => "LookupTableInitialized",
+          "tableName" => table_name,
+          "method"    => "#{self.class}#initialize"
+        )
       end
 
       def write(component_key, version, location)
-        logger.info "LookupTable#write: component key '#{component_key}', version '#{version}', location '#{location}'"
-
         client.put_item({
           :table_name => table_name,
           :item => {
@@ -34,7 +36,15 @@ module Alephant
               'S' => location.to_s
             }
           }
-        })
+        }).tap do
+          logger.info(
+            "event"        => "LookupLocationWritten",
+            "componentKey" => component_key,
+            "version"      => version,
+            "location"     => location,
+            "method"       => "#{self.class}#write"
+          )
+        end
       end
 
     end

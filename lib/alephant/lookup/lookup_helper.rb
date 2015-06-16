@@ -11,26 +11,44 @@ module Alephant
       attr_reader :lookup_table
 
       def initialize(lookup_table)
-        logger.info "LookupHelper#initialize(#{lookup_table.table_name})"
-
         @lookup_table = lookup_table
+
+        logger.info(
+          "event"     => "LookupHelperInitialized",
+          "tableName" => lookup_table.table_name,
+          "method"    => "#{self.class}#initialize"
+        )
       end
 
       def read(id, opts, batch_version)
-        logger.info "LookupHelper#read(#{id}, #{opts}, #{batch_version})"
-
-        LookupQuery.new(lookup_table.table_name, id, opts, batch_version).run!
+        LookupQuery.new(lookup_table.table_name, id, opts, batch_version).run!.tap do
+          logger.info(
+            "event"        => "LookupQuerySuccessful",
+            "tableName"    => lookup_table.table_name,
+            "id"           => id,
+            "opts"         => opts,
+            "batchVersion" => batch_version,
+            "method"       => "#{self.class}#read"
+          )
+        end
       end
 
       def write(id, opts, batch_version, location)
-        logger.info "LookupHelper#write(#{id}, #{opts}, #{batch_version}, #{location})"
-
         LookupLocation.new(id, opts, batch_version, location).tap do |l|
           lookup_table.write(
             l.component_key,
             l.batch_version,
             l.location
-          )
+          ).tap do
+            logger.info(
+              "event"        => "LookupLocationUpdated",
+              "location"     => location,
+              "id"           => id,
+              "opts"         => opts,
+              "batchVersion" => batch_version,
+              "method"       => "#{self.class}#write"
+            )
+          end
         end
       end
 
