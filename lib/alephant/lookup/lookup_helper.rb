@@ -23,7 +23,7 @@ module Alephant
       def read(id, opts, batch_version)
         LookupQuery.new(lookup_table.table_name, id, opts, batch_version).run!.tap do
           logger.info(
-            "event"        => "LookupQuerySuccessful",
+            "event"        => "LookupQuery",
             "tableName"    => lookup_table.table_name,
             "id"           => id,
             "opts"         => opts,
