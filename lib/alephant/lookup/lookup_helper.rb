@@ -1,5 +1,6 @@
 require "alephant/lookup/lookup_table"
 require "alephant/lookup/lookup_query"
+require "alephant/lookup/lookup_cache"
 
 require 'alephant/logger'
 
@@ -10,8 +11,9 @@ module Alephant
 
       attr_reader :lookup_table
 
-      def initialize(lookup_table)
+      def initialize(lookup_table, config)
         @lookup_table = lookup_table
+        @config = config
 
         logger.info(
           "event"     => "LookupHelperInitialized",
@@ -21,15 +23,17 @@ module Alephant
       end
 
       def read(id, opts, batch_version)
-        LookupQuery.new(lookup_table.table_name, id, opts, batch_version).run!.tap do
-          logger.info(
-            "event"        => "LookupQuery",
-            "tableName"    => lookup_table.table_name,
-            "id"           => id,
-            "opts"         => opts,
-            "batchVersion" => batch_version,
-            "method"       => "#{self.class}#read"
-          )
+        LookupCache.new(@config).get(component_cache_key(id, opts, batch_version)) do
+          LookupQuery.new(lookup_table.table_name, id, opts, batch_version).run!.tap do
+            logger.info(
+              "event"        => "LookupQuery",
+              "tableName"    => lookup_table.table_name,
+              "id"           => id,
+              "opts"         => opts,
+              "batchVersion" => batch_version,
+              "method"       => "#{self.class}#read"
+            )
+          end
         end
       end
 
@@ -54,6 +58,14 @@ module Alephant
 
       def truncate!
         @lookup_table.truncate!
+      end
+
+      private
+
+      def component_cache_key(id, opts, batch_version)
+        "#{@lookup_table.table_name}/COMPONENT_KEY/#{batch_version}".gsub("COMPONENT_KEY") do |s|
+          LookupLocation.new(id, opts, batch_version).component_key
+        end
       end
     end
   end
