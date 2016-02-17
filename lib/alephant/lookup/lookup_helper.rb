@@ -1,7 +1,7 @@
 require "alephant/lookup/lookup_table"
 require "alephant/lookup/lookup_query"
 
-require 'alephant/logger'
+require "alephant/logger"
 
 module Alephant
   module Lookup

@@ -16,7 +16,7 @@ describe Alephant::Lookup do
 
     describe "#initialize(table_name)" do
       it "calls create on lookup_table" do
-        table = double()
+        table = double
         table.should_receive(:table_name)
         subject.new(table)
       end
@@ -25,18 +25,18 @@ describe Alephant::Lookup do
     describe "#read(id, opts, batch_version)" do
       let(:expected_query) do
         {
-          :table_name=>"table_name",
-          :consistent_read=>true,
-          :select=>"SPECIFIC_ATTRIBUTES",
-          :attributes_to_get=>["location"],
-          :key_conditions=>{
-            "component_key"=> {
-              :comparison_operator=>"EQ",
-              :attribute_value_list=>[{"s"=>"id/9dd916afd5516828a91d259967fd394a"}]
+          :table_name        => "table_name",
+          :consistent_read   => true,
+          :select            => "SPECIFIC_ATTRIBUTES",
+          :attributes_to_get => ["location"],
+          :key_conditions    => {
+            "component_key" => {
+              :comparison_operator  => "EQ",
+              :attribute_value_list => [{ "s" => "id/9dd916afd5516828a91d259967fd394a" }]
             },
-            "batch_version"=>{
-              :comparison_operator=>"EQ",
-              :attribute_value_list=>[{"n"=>"{:variant=>\"foo\"}"}]
+            "batch_version" => {
+              :comparison_operator  => "EQ",
+              :attribute_value_list => [{ "n" => "{:variant=>\"foo\"}" }]
             }
           }
         }
@@ -52,19 +52,17 @@ describe Alephant::Lookup do
           .should_receive(:query)
           .with(expected_query)
           .and_return(
-            {
-              :count => 1,
-              :member => [
-                { "location" => { :s => "/location" } }
-              ]
-            }
+            :count  => 1,
+            :member => [
+              { "location" => { :s => "/location" } }
+            ]
           )
 
-        table = double().as_null_object
+        table = double.as_null_object
         table.stub(:table_name).and_return("table_name")
 
         instance = subject.new(table)
-        lookup = instance.read("id", 0, {:variant => "foo"})
+        lookup = instance.read("id", 0, :variant => "foo")
 
         expect(lookup.location).to eq("/location")
       end
@@ -72,18 +70,17 @@ describe Alephant::Lookup do
 
     describe "#write(opts, location)" do
       it "does not fail" do
-
         AWS::DynamoDB::Client::V20120810
           .any_instance
           .stub(:initialize)
           .and_return(
-            double().as_null_object
+            double.as_null_object
           )
 
-        lookup_table = double().as_null_object
+        lookup_table = double.as_null_object
         lookup_table
           .should_receive(:table_name)
-          .and_return('test')
+          .and_return("test")
         lookup_table
           .should_receive(:write)
           .with(
@@ -98,13 +95,13 @@ describe Alephant::Lookup do
           .and_return(lookup_table)
 
         instance = subject.new(lookup_table)
-        instance.write("id",{},"0","/location")
+        instance.write("id", {}, "0", "/location")
       end
     end
 
     describe "#truncate!" do
       it "deletes all table rows" do
-        table = double()
+        table = double
         table.stub(:create)
         table.should_receive(:table_name)
         table.should_receive(:truncate!)

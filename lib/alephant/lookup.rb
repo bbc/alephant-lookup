@@ -2,7 +2,7 @@ require "alephant/lookup/version"
 require "alephant/lookup/lookup_helper"
 require "alephant/lookup/lookup_table"
 
-require 'alephant/logger'
+require "alephant/logger"
 
 module Alephant
   module Lookup

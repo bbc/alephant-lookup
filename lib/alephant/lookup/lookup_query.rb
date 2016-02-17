@@ -45,19 +45,19 @@ module Alephant
 
       def to_q
         {
-          :table_name => table_name,
-          :consistent_read => true,
-          :select => "SPECIFIC_ATTRIBUTES",
+          :table_name        => table_name,
+          :consistent_read   => true,
+          :select            => "SPECIFIC_ATTRIBUTES",
           :attributes_to_get => ["location"],
-          :key_conditions => {
+          :key_conditions    => {
             "component_key" => {
-              :comparison_operator => "EQ",
+              :comparison_operator  => "EQ",
               :attribute_value_list => [
                 { "s" => @lookup_location.component_key }
-              ],
+              ]
             },
             "batch_version" => {
-              :comparison_operator => "EQ",
+              :comparison_operator  => "EQ",
               :attribute_value_list => [
                 { "n" => @lookup_location.batch_version.to_s }
               ]

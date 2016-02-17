@@ -1,8 +1,8 @@
-$:.unshift File.join(File.dirname(__FILE__), 'lib')
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), "lib")
 
-require 'rspec/core/rake_task'
-require 'bundler/gem_tasks'
-require 'alephant/lookup'
+require "rspec/core/rake_task"
+require "bundler/gem_tasks"
+require "alephant/lookup"
 
 RSpec::Core::RakeTask.new(:spec)
 

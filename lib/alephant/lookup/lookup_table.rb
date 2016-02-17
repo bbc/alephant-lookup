@@ -23,20 +23,18 @@ module Alephant
       end
 
       def write(component_key, version, location)
-        client.put_item({
-          :table_name => table_name,
-          :item => {
-            'component_key' => {
-              'S' => component_key.to_s
-            },
-            'batch_version' => {
-              'N' => version.to_s
-            },
-            'location' => {
-              'S' => location.to_s
-            }
-          }
-        }).tap do
+        client.put_item(:table_name => table_name,
+                        :item       => {
+                          "component_key" => {
+                            "S" => component_key.to_s
+                          },
+                          "batch_version" => {
+                            "N" => version.to_s
+                          },
+                          "location"      => {
+                            "S" => location.to_s
+                          }
+                        }).tap do
           logger.info(
             "event"        => "LookupLocationWritten",
             "componentKey" => component_key,
@@ -46,7 +44,6 @@ module Alephant
           )
         end
       end
-
     end
   end
 end
