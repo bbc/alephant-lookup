@@ -3,9 +3,7 @@ require "spec_helper"
 describe Alephant::Lookup do
   describe ".create(table_name, component_id)" do
     it "returns a lookup" do
-      Alephant::Lookup::LookupHelper
-        .any_instance
-        .stub(:initialize)
+      expect_any_instance_of(Alephant::Lookup::LookupHelper).to receive(:initialize)
 
       expect(subject.create(:table_name)).to be_a Alephant::Lookup::LookupHelper
     end
@@ -17,7 +15,7 @@ describe Alephant::Lookup do
     describe "#initialize(table_name)" do
       it "calls create on lookup_table" do
         table = double()
-        table.should_receive(:table_name)
+        expect(table).to receive(:table_name)
         subject.new(table)
       end
     end
@@ -43,13 +41,11 @@ describe Alephant::Lookup do
       end
 
       it "queries DynamoDb and returns a location" do
-        AWS::DynamoDB::Client::V20120810
-          .any_instance
-          .stub(:initialize)
+        expect_any_instance_of(AWS::DynamoDB::Client::V20120810)
+          .to receive(:initialize)
 
-        AWS::DynamoDB::Client::V20120810
-          .any_instance
-          .should_receive(:query)
+        expect_any_instance_of(AWS::DynamoDB::Client::V20120810)
+          .to receive(:query)
           .with(expected_query)
           .and_return(
             {
@@ -61,7 +57,7 @@ describe Alephant::Lookup do
           )
 
         table = double().as_null_object
-        table.stub(:table_name).and_return("table_name")
+        expect(table).to receive(:table_name).and_return("table_name").exactly(3).times
 
         instance = subject.new(table)
         lookup = instance.read("id", 0, {:variant => "foo"})
@@ -72,29 +68,22 @@ describe Alephant::Lookup do
 
     describe "#write(opts, location)" do
       it "does not fail" do
-
-        AWS::DynamoDB::Client::V20120810
-          .any_instance
-          .stub(:initialize)
-          .and_return(
-            double().as_null_object
-          )
-
         lookup_table = double().as_null_object
-        lookup_table
-          .should_receive(:table_name)
+
+        expect(lookup_table)
+          .to receive(:table_name)
           .and_return('test')
-        lookup_table
-          .should_receive(:write)
+
+        expect(lookup_table)
+          .to receive(:write)
           .with(
             "id/7e0c33c476b1089500d5f172102ec03e",
             "0",
             "/location"
           )
 
-        Alephant::Lookup::LookupHelper
-          .any_instance
-          .stub(:lookup_table)
+        expect_any_instance_of(Alephant::Lookup::LookupHelper)
+          .to receive(:lookup_table)
           .and_return(lookup_table)
 
         instance = subject.new(lookup_table)
@@ -105,9 +94,8 @@ describe Alephant::Lookup do
     describe "#truncate!" do
       it "deletes all table rows" do
         table = double()
-        table.stub(:create)
-        table.should_receive(:table_name)
-        table.should_receive(:truncate!)
+        expect(table).to receive(:table_name)
+        expect(table).to receive(:truncate!)
 
         subject = Alephant::Lookup::LookupHelper.new(table)
         subject.truncate!
