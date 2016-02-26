@@ -63,9 +63,13 @@ module Alephant
       private
 
       def component_cache_key(id, opts, batch_version)
-        "#{lookup_table.table_name}/COMPONENT_KEY/#{batch_version}".gsub("COMPONENT_KEY") do |s|
+        template_key(batch_version).gsub("{{COMPONENT_KEY}}") do |s|
           LookupLocation.new(id, opts, batch_version).component_key
         end
+      end
+
+      def template_key(batch_version)
+        "#{lookup_table.table_name}/{{COMPONENT_KEY}}/#{batch_version}"
       end
     end
   end
