@@ -6,6 +6,8 @@ module Alephant
     class LookupCache
       include Logger
 
+      attr_reader :config
+
       DEFAULT_TTL  = 5
 
       def initialize(config)
@@ -40,11 +42,11 @@ module Alephant
       private
 
       def config_endpoint
-        @config["elasticache_config_endpoint"]
+        config["elasticache_config_endpoint"]
       end
 
       def ttl
-        @config['elasticache_ttl'] || DEFAULT_TTL
+        config['elasticache_ttl'] || DEFAULT_TTL
       end
 
       def versioned(key)
@@ -52,7 +54,7 @@ module Alephant
       end
 
       def cache_version
-        @config['elasticache_cache_version']
+        config['elasticache_cache_version']
       end
     end
 
