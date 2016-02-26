@@ -10,8 +10,8 @@ module Alephant
 
       DEFAULT_TTL  = 5
 
-      def initialize(config)
-        @config = config || {}
+      def initialize(config={})
+        @config = config
 
         unless config_endpoint.nil?
           @@elasticache ||= ::Dalli::ElastiCache.new(config_endpoint, { :expires_in => ttl })
