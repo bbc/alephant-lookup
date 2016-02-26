@@ -9,7 +9,7 @@ module Alephant
     class LookupHelper
       include Logger
 
-      attr_reader :lookup_table
+      attr_reader :lookup_table, :config
 
       def initialize(lookup_table, config={})
         @lookup_table = lookup_table
@@ -23,7 +23,7 @@ module Alephant
       end
 
       def read(id, opts, batch_version)
-        LookupCache.new(@config).get(component_cache_key(id, opts, batch_version)) do
+        LookupCache.new(config).get(component_cache_key(id, opts, batch_version)) do
           LookupQuery.new(lookup_table.table_name, id, opts, batch_version).run!.tap do
             logger.info(
               "event"        => "LookupQuery",
@@ -57,13 +57,13 @@ module Alephant
       end
 
       def truncate!
-        @lookup_table.truncate!
+        lookup_table.truncate!
       end
 
       private
 
       def component_cache_key(id, opts, batch_version)
-        "#{@lookup_table.table_name}/COMPONENT_KEY/#{batch_version}".gsub("COMPONENT_KEY") do |s|
+        "#{lookup_table.table_name}/COMPONENT_KEY/#{batch_version}".gsub("COMPONENT_KEY") do |s|
           LookupLocation.new(id, opts, batch_version).component_key
         end
       end
