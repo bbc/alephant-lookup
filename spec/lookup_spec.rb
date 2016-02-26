@@ -16,7 +16,7 @@ describe Alephant::Lookup do
       it "calls create on lookup_table" do
         table = double()
         expect(table).to receive(:table_name)
-        subject.new(table, nil)
+        subject.new(table)
       end
     end
 
@@ -116,7 +116,7 @@ describe Alephant::Lookup do
           .to receive(:lookup_table)
           .and_return(lookup_table)
 
-        instance = subject.new(lookup_table, nil)
+        instance = subject.new(lookup_table)
         instance.write("id",{},"0","/location")
       end
     end
@@ -127,7 +127,7 @@ describe Alephant::Lookup do
         expect(table).to receive(:table_name)
         expect(table).to receive(:truncate!)
 
-        subject = Alephant::Lookup::LookupHelper.new(table, nil)
+        subject = Alephant::Lookup::LookupHelper.new(table)
         subject.truncate!
       end
     end

@@ -11,7 +11,7 @@ module Alephant
 
       attr_reader :lookup_table
 
-      def initialize(lookup_table, config)
+      def initialize(lookup_table, config={})
         @lookup_table = lookup_table
         @config = config
 
