@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Alephant::Lookup do
-  describe ".create(table_name, component_id)" do
+  describe ".create" do
     it "returns a lookup" do
       expect_any_instance_of(Alephant::Lookup::LookupHelper).to receive(:initialize)
 
@@ -12,7 +12,7 @@ describe Alephant::Lookup do
   describe Alephant::Lookup::LookupHelper do
     subject { Alephant::Lookup::LookupHelper }
 
-    describe "#initialize(table_name)" do
+    describe "#initialize" do
       it "calls create on lookup_table" do
         table = double()
         expect(table).to receive(:table_name)
@@ -20,7 +20,7 @@ describe Alephant::Lookup do
       end
     end
 
-    describe "#read(id, opts, batch_version)" do
+    describe "#read" do
       let(:expected_query) do
         {
           :table_name=>"table_name",
@@ -96,7 +96,7 @@ describe Alephant::Lookup do
       end
     end
 
-    describe "#write(opts, location)" do
+    describe "#write" do
       it "does not fail" do
         lookup_table = double().as_null_object
 
