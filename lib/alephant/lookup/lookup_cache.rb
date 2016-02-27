@@ -14,19 +14,19 @@ module Alephant
         @config = config
 
         unless config_endpoint.nil?
-          @@elasticache ||= ::Dalli::ElastiCache.new(config_endpoint, { :expires_in => ttl })
-          @@client ||= @@elasticache.client
+          @elasticache ||= ::Dalli::ElastiCache.new(config_endpoint, { :expires_in => ttl })
+          @client ||= @elasticache.client
         else
           logger.debug "Alephant::LookupCache::#initialize: No config endpoint, NullClient used"
           logger.metric "NoConfigEndpoint"
-          @@client = NullClient.new
+          @client = NullClient.new
         end
       end
 
       def get(key, &block)
         begin
           versioned_key = versioned key
-          result = @@client.get versioned_key
+          result = @client.get versioned_key
           logger.info "Alephant::LookupCache#get key: #{versioned_key} - #{result ? 'hit' : 'miss'}"
           logger.metric "GetKeyMiss" unless result
           result ? result : set(key, block.call)
@@ -36,7 +36,7 @@ module Alephant
       end
 
       def set(key, value, ttl = nil)
-        value.tap { |o| @@client.set(versioned(key), o, ttl) }
+        value.tap { |o| @client.set(versioned(key), o, ttl) }
       end
 
       private

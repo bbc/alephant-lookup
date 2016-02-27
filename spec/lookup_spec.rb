@@ -75,6 +75,10 @@ describe Alephant::Lookup do
 
       it "reads location from the cache when in cache" do
         lookup_location = Alephant::Lookup::LookupLocation.new("id", {:variant => "foo"}, 0, "/location")
+
+        expect_any_instance_of(Dalli::ElastiCache).to receive(:initialize)
+        expect_any_instance_of(Dalli::ElastiCache).to receive(:client).and_return(Dalli::Client.new)
+
         expect_any_instance_of(Dalli::Client).to receive(:get)
           .with("table_name/id/218c835cec343537589dbf1619532e4d/0")
           .and_return(lookup_location)
