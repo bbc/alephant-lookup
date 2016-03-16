@@ -1,5 +1,5 @@
-require 'dalli-elasticache'
-require 'alephant/logger'
+require "dalli-elasticache"
+require "alephant/logger"
 
 module Alephant
   module Lookup
@@ -8,7 +8,7 @@ module Alephant
 
       attr_reader :config
 
-      DEFAULT_TTL  = 5
+      DEFAULT_TTL  = 2
 
       def initialize(config={})
         @config = config
@@ -46,15 +46,15 @@ module Alephant
       end
 
       def ttl
-        config['elasticache_ttl'] || DEFAULT_TTL
+        config["lookup_elasticache_ttl"] || DEFAULT_TTL
       end
 
       def versioned(key)
-        [key, cache_version].compact.join('_')
+        [key, cache_version].compact.join("_")
       end
 
       def cache_version
-        config['elasticache_cache_version']
+        config["elasticache_cache_version"]
       end
     end
 
