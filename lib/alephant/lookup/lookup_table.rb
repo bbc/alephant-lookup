@@ -1,4 +1,4 @@
-require "aws-sdk"
+require "aws-sdk-dynamodb"
 require "thread"
 require "timeout"
 
@@ -12,8 +12,10 @@ module Alephant
       attr_reader :table_name, :client
 
       def initialize(table_name)
+        options = {}
+        options.merge!({endpoint: ENV['AWS_DYNAMO_DB_ENDPOINT']}) if ENV['AWS_DYNAMO_DB_ENDPOINT']
         @mutex      = Mutex.new
-        @client     = AWS::DynamoDB::Client::V20120810.new
+        @client     = Aws::DynamoDB::Client.new(options)
         @table_name = table_name
         logger.info(
           "event"     => "LookupTableInitialized",
@@ -24,17 +26,11 @@ module Alephant
 
       def write(component_key, version, location)
         client.put_item({
-          :table_name => table_name,
-          :item => {
-            'component_key' => {
-              'S' => component_key.to_s
-            },
-            'batch_version' => {
-              'N' => version.to_s
-            },
-            'location' => {
-              'S' => location.to_s
-            }
+          table_name: table_name,
+          item: {
+            'component_key' => component_key.to_s,
+            'batch_version' => version,
+            'location'      => location.to_s
           }
         }).tap do
           logger.info(

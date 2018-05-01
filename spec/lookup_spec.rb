@@ -23,19 +23,16 @@ describe Alephant::Lookup do
     describe "#read" do
       let(:expected_query) do
         {
-          :table_name=>"table_name",
-          :consistent_read=>true,
-          :select=>"SPECIFIC_ATTRIBUTES",
-          :attributes_to_get=>["location"],
-          :key_conditions=>{
-            "component_key"=> {
-              :comparison_operator=>"EQ",
-              :attribute_value_list=>[{"s"=>"id/218c835cec343537589dbf1619532e4d"}]
-            },
-            "batch_version"=>{
-              :comparison_operator=>"EQ",
-              :attribute_value_list=>[{"n"=>"0"}]
-            }
+          :table_name => 'table_name',
+          :consistent_read => true,
+          :projection_expression => '#loc',
+          :expression_attribute_names => {
+            '#loc' => 'location'
+          },
+          :key_condition_expression => 'component_key = :component_key AND batch_version = :batch_version',
+          :expression_attribute_values => {
+            ':component_key' => 'id/218c835cec343537589dbf1619532e4d',
+            ':batch_version' => 0 # @TODO: Verify if this is nil as this would be 0
           }
         }
       end
@@ -47,20 +44,13 @@ describe Alephant::Lookup do
         expect_any_instance_of(Dalli::Client).to receive(:get)
         expect_any_instance_of(Dalli::Client).to receive(:set)
 
-        expect_any_instance_of(AWS::DynamoDB::Client::V20120810)
+        expect_any_instance_of(Aws::DynamoDB::Client)
           .to receive(:initialize)
 
-        expect_any_instance_of(AWS::DynamoDB::Client::V20120810)
+        expect_any_instance_of(Aws::DynamoDB::Client)
           .to receive(:query)
           .with(expected_query)
-          .and_return(
-            {
-              :count => 1,
-              :member => [
-                { "location" => { :s => "/location" } }
-              ]
-            }
-          )
+          .and_return(double(count: 1, items: [{ "location" => "/location"}]))
 
         table = double().as_null_object
         expect(table).to receive(:table_name).and_return("table_name").exactly(4).times
@@ -84,9 +74,9 @@ describe Alephant::Lookup do
           .and_return(lookup_location)
         expect_any_instance_of(Dalli::Client).to_not receive(:set)
 
-        expect_any_instance_of(AWS::DynamoDB::Client::V20120810).to_not receive(:initialize)
+        expect_any_instance_of(Aws::DynamoDB::Client).to_not receive(:initialize)
 
-        expect_any_instance_of(AWS::DynamoDB::Client::V20120810).to_not receive(:query)
+        expect_any_instance_of(Aws::DynamoDB::Client).to_not receive(:query)
 
         table = double().as_null_object
         expect(table).to receive(:table_name).and_return("table_name").twice
