@@ -10,10 +10,10 @@ module Alephant
 
       def initialize(table_name, component_id, opts, batch_version)
         options = {}
-        options.merge!({endpoint: ENV['AWS_DYNAMO_DB_ENDPOINT']}) if ENV['AWS_DYNAMO_DB_ENDPOINT']
-        @client          = Aws::DynamoDB::Client.new(options)
-        @table_name      = table_name
-        @lookup_location = LookupLocation.new(component_id, opts, batch_version)
+        options[:endpoint] = ENV['AWS_DYNAMO_DB_ENDPOINT'] if ENV['AWS_DYNAMO_DB_ENDPOINT']
+        @client            = Aws::DynamoDB::Client.new(options)
+        @table_name        = table_name
+        @lookup_location   = LookupLocation.new(component_id, opts, batch_version)
 
         logger.info(
           "event"        => "LookupQueryInitialized",
