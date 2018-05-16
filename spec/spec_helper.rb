@@ -5,3 +5,4 @@ require 'alephant/lookup'
 require 'crimp'
 require 'logger'
 
+ENV['AWS_REGION'] = 'eu-west-1'
