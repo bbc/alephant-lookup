@@ -33,6 +33,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "alephant-logger"
   spec.add_runtime_dependency "alephant-support"
 
-  spec.add_runtime_dependency "dalli-elasticache"
+  spec.add_runtime_dependency "dalli"
   spec.add_runtime_dependency "crimp"
 end

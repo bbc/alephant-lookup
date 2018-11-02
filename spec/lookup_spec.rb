@@ -31,17 +31,19 @@ describe Alephant::Lookup do
           },
           :key_condition_expression => 'component_key = :component_key AND batch_version = :batch_version',
           :expression_attribute_values => {
-            ':component_key' => 'id/218c835cec343537589dbf1619532e4d',
+            ':component_key' => 'id/7ef6e03f709c7e6b1c87bcf908bc5e0e',
             ':batch_version' => 0 # @TODO: Verify if this is nil as this would be 0
           }
         }
       end
 
-      it "queries DynamoDb and returns a location when not in cache" do
-        expect_any_instance_of(Dalli::ElastiCache).to receive(:client).and_return(Dalli::Client.new)
+      let(:cache_client) { Dalli::Client.new }
 
-        expect_any_instance_of(Dalli::Client).to receive(:get)
-        expect_any_instance_of(Dalli::Client).to receive(:set)
+      it "queries DynamoDb and returns a location when not in cache" do
+        expect(Dalli::Client).to receive(:new).and_return(cache_client)
+
+        expect(cache_client).to receive(:get)
+        expect(cache_client).to receive(:set)
 
         expect_any_instance_of(Aws::DynamoDB::Client)
           .to receive(:query)
@@ -62,12 +64,12 @@ describe Alephant::Lookup do
       it "reads location from the cache when in cache" do
         lookup_location = Alephant::Lookup::LookupLocation.new("id", {:variant => "foo"}, 0, "/location")
 
-        expect_any_instance_of(Dalli::ElastiCache).to receive(:client).and_return(Dalli::Client.new)
+        expect(Dalli::Client).to receive(:new).and_return(cache_client)
 
-        expect_any_instance_of(Dalli::Client).to receive(:get)
-          .with("table_name/id/218c835cec343537589dbf1619532e4d/0")
+        expect(cache_client).to receive(:get)
+          .with("table_name/id/7ef6e03f709c7e6b1c87bcf908bc5e0e/0")
           .and_return(lookup_location)
-        expect_any_instance_of(Dalli::Client).to_not receive(:set)
+        expect(cache_client).to_not receive(:set)
 
         expect_any_instance_of(Aws::DynamoDB::Client).to_not receive(:query)
 
@@ -94,7 +96,7 @@ describe Alephant::Lookup do
         expect(lookup_table)
           .to receive(:write)
           .with(
-            "id/7e0c33c476b1089500d5f172102ec03e",
+            "id/c1d9f50f86825a1a2302ec2449c17196",
             "0",
             "/location"
           )
