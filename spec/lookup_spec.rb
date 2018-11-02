@@ -37,11 +37,13 @@ describe Alephant::Lookup do
         }
       end
 
-      it "queries DynamoDb and returns a location when not in cache" do
-        expect_any_instance_of(Dalli::ElastiCache).to receive(:client).and_return(Dalli::Client.new)
+      let(:cache_client) { Dalli::Client.new }
 
-        expect_any_instance_of(Dalli::Client).to receive(:get)
-        expect_any_instance_of(Dalli::Client).to receive(:set)
+      it "queries DynamoDb and returns a location when not in cache" do
+        expect(Dalli::Client).to receive(:new).and_return(cache_client)
+
+        expect(cache_client).to receive(:get)
+        expect(cache_client).to receive(:set)
 
         expect_any_instance_of(Aws::DynamoDB::Client)
           .to receive(:query)
@@ -62,12 +64,12 @@ describe Alephant::Lookup do
       it "reads location from the cache when in cache" do
         lookup_location = Alephant::Lookup::LookupLocation.new("id", {:variant => "foo"}, 0, "/location")
 
-        expect_any_instance_of(Dalli::ElastiCache).to receive(:client).and_return(Dalli::Client.new)
+        expect(Dalli::Client).to receive(:new).and_return(cache_client)
 
-        expect_any_instance_of(Dalli::Client).to receive(:get)
+        expect(cache_client).to receive(:get)
           .with("table_name/id/7ef6e03f709c7e6b1c87bcf908bc5e0e/0")
           .and_return(lookup_location)
-        expect_any_instance_of(Dalli::Client).to_not receive(:set)
+        expect(cache_client).to_not receive(:set)
 
         expect_any_instance_of(Aws::DynamoDB::Client).to_not receive(:query)
 
