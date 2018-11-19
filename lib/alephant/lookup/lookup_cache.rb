@@ -16,7 +16,7 @@ module Alephant
         unless config_endpoint.nil?
           @client ||= ::Dalli::Client.new(config_endpoint, { :expires_in => ttl })
         else
-          logger.debug "Alephant::LookupCache::#initialize: No config endpoint, NullClient used"
+          logger.warn "Alephant::LookupCache::#initialize: No config endpoint, NullClient used"
           logger.metric "NoConfigEndpoint"
           @client = NullClient.new
         end
@@ -29,7 +29,8 @@ module Alephant
           logger.info "Alephant::LookupCache#get key: #{versioned_key} - #{result ? 'hit' : 'miss'}"
           logger.metric "GetKeyMiss" unless result
           result ? result : set(key, block.call)
-        rescue StandardError => e
+        rescue StandardError => error
+          logger.error(event: 'ErrorCaught', method: "#{self.class}#get", error: error)
           block.call if block_given?
         end
       end
