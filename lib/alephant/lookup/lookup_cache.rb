@@ -26,20 +26,15 @@ module Alephant
       end
 
       def get(key, &block)
-        begin
-          versioned_key = versioned key
-          result = @client.get versioned_key
-          logger.info(
-            event:  'Alephant::LookupCache#get',
-            key:     versioned_key,
-            result:  result ? 'hit' : 'miss'
-          )
-          logger.metric "GetKeyMiss" unless result
-          result ? result : set(key, block.call)
-        rescue StandardError => error
-          logger.error(event: 'ErrorCaught', method: "#{self.class}#get", error: error)
-          block.call if block_given?
-        end
+        versioned_key = versioned key
+        result = @client.get versioned_key
+        logger.info(
+          event:  'Alephant::LookupCache#get',
+          key:     versioned_key,
+          result:  result ? 'hit' : 'miss'
+        )
+        logger.metric "GetKeyMiss" unless result
+        result ? result : set(key, block.call)
       end
 
       def set(key, value, ttl = nil)
