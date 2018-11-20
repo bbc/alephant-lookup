@@ -16,12 +16,12 @@ module Alephant
         @lookup_location   = LookupLocation.new(component_id, opts, batch_version)
 
         logger.info(
-          "event"        => "LookupQueryInitialized",
-          "tableName"    => table_name,
-          "componentId"  => component_id,
-          "location"     => lookup_location,
-          "batchVersion" => batch_version,
-          "method"       => "#{self.class}#initialize"
+          event:         "LookupQueryInitialized",
+          tableName:     table_name,
+          componentId:   component_id,
+          location:      lookup_location,
+          batchVersion:  batch_version,
+          method:        "#{self.class}#initialize"
         )
       end
 
@@ -31,9 +31,9 @@ module Alephant
             @client.query(to_q)
           ).tap do |loc|
             logger.info(
-              "event"    => "S3LocationRetrieved",
-              "location" => loc,
-              "method"   => "#{self.class}#run!"
+              event:     "S3LocationRetrieved",
+              location:  loc,
+              method:    "#{self.class}#run!"
             )
           end
         end
