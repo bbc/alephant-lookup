@@ -17,8 +17,8 @@ module Alephant
           @client ||= ::Dalli::Client.new(config_endpoint, { :expires_in => ttl })
         else
           logger.warn(
-            'method'     => 'Alephant::Lookup::LookupCache#initialize',
-            'message'    => 'No config endpoint, NullClient used'
+            method:   'Alephant::Lookup::LookupCache#initialize',
+            message:  'No config endpoint, NullClient used'
           )
           logger.metric "NoConfigEndpoint"
           @client = NullClient.new
