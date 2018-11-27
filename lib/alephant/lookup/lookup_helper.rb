@@ -16,9 +16,9 @@ module Alephant
         @config = config
 
         logger.info(
-          event:      "LookupHelperInitialized",
-          tableName:  lookup_table.table_name,
-          method:     "#{self.class}#initialize"
+          event:     "LookupHelperInitialized",
+          tableName: lookup_table.table_name,
+          method:    "#{self.class}#initialize"
         )
       end
 
@@ -26,12 +26,12 @@ module Alephant
         LookupCache.new(config).get(component_cache_key(id, opts, batch_version)) do
           LookupQuery.new(lookup_table.table_name, id, opts, batch_version).run!.tap do
             logger.info(
-              event:         "LookupQuery",
-              tableName:     lookup_table.table_name,
-              id:            id,
-              opts:          opts,
-              batchVersion:  batch_version,
-              method:        "#{self.class}#read"
+              event:        "LookupQuery",
+              tableName:    lookup_table.table_name,
+              id:           id,
+              opts:         opts,
+              batchVersion: batch_version,
+              method:       "#{self.class}#read"
             )
           end
         end
@@ -45,12 +45,12 @@ module Alephant
             l.location
           ).tap do
             logger.info(
-              event:         "LookupLocationUpdated",
-              location:      location,
-              id:            id,
-              opts:          opts,
-              batchVersion:  batch_version,
-              method:        "#{self.class}#write"
+              event:        "LookupLocationUpdated",
+              location:     location,
+              id:           id,
+              opts:         opts,
+              batchVersion: batch_version,
+              method:       "#{self.class}#write"
             )
           end
         end
