@@ -18,9 +18,9 @@ module Alephant
         @client     = Aws::DynamoDB::Client.new(options)
         @table_name = table_name
         logger.info(
-          "event"     => "LookupTableInitialized",
-          "tableName" => table_name,
-          "method"    => "#{self.class}#initialize"
+          event:     "LookupTableInitialized",
+          tableName: table_name,
+          method:    "#{self.class}#initialize"
         )
       end
 
@@ -28,21 +28,20 @@ module Alephant
         client.put_item({
           table_name: table_name,
           item: {
-            'component_key' => component_key.to_s,
-            'batch_version' => version,
-            'location'      => location.to_s
+            component_key: component_key.to_s,
+            batch_version: version,
+            location:      location.to_s
           }
         }).tap do
           logger.info(
-            "event"        => "LookupLocationWritten",
-            "componentKey" => component_key,
-            "version"      => version,
-            "location"     => location,
-            "method"       => "#{self.class}#write"
+            event:        "LookupLocationWritten",
+            componentKey: component_key,
+            version:      version,
+            location:     location,
+            method:       "#{self.class}#write"
           )
         end
       end
-
     end
   end
 end

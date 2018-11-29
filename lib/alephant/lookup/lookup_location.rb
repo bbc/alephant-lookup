@@ -23,7 +23,6 @@ module Alephant
       def hash_for(opts)
         Crimp.signature opts
       end
-
     end
   end
 end
